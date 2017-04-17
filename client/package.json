@@ -1,0 +1,28 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "^0.9.5"
+  },
+  "dependencies": {
+    "apollo-client": "^1.0.3",
+    "axios": "^0.15.3",
+    "graphql-tag": "^2.0.0",
+    "react": "^15.5.4",
+    "react-apollo": "^0.10.0",
+    "react-dom": "^15.5.4",
+    "react-helmet": "^5.0.3",
+    "react-router-dom": "^4.0.0",
+    "semantic-ui-css": "^2.2.10",
+    "semantic-ui-react": "^0.68.0",
+    "styled-components": "^1.4.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://localhost:4000/"
+}

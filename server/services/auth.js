@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
+import mongoose from 'mongoose';
+import passport from 'passport';
+
 const LocalStrategy = require('passport-local').Strategy;
 
 const User = mongoose.model('user');
@@ -90,10 +91,9 @@ function login({ email, password, req }) {
       if (!user) {
         reject('Invalid credentials.');
       }
-
       req.login(user, () => resolve(user));
     })({ body: { email, password } });
   });
 }
-
-module.exports = { signup, login };
+export { signup, login };
+// module.exports = { signup, login };

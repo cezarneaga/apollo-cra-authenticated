@@ -1,19 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Routes from './routes';
-import ApolloClient, { createNetworkInterface } from 'apollo-client';
-import { ApolloProvider } from 'react-apollo';
+import {
+  ApolloClient,
+  ApolloProvider,
+  createNetworkInterface,
+} from 'react-apollo';
 import 'semantic-ui-css/semantic.min.css';
-const client = new ApolloClient({
-  dataIdFromObject: o => o.id,
-  connectToDevTools: true,
-  networkInterface: createNetworkInterface({
-    uri: '/api',
-    opts: {
-      credentials: 'include',
-    },
-  }),
+const networkInterface = createNetworkInterface({
+  uri: 'http://localhost:4000/graphql',
 });
+const client = new ApolloClient({
+  // dataIdFromObject: o => o.id,
+  connectToDevTools: true,
+  networkInterface,
+});
+
 const render = Component => {
   return ReactDOM.render(
     <ApolloProvider client={client}>

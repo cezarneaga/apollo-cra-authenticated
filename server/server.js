@@ -1,18 +1,18 @@
-const express = require('express');
+import express from 'express';
+import { models } from './models';
+import { graphqlExpress, graphiqlExpress } from 'graphql-server-express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 require('dotenv-extended').load();
-const models = require('./models');
-const expressGraphQL = require('express-graphql');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const mongoose = require('mongoose');
-const session = require('express-session');
-const passport = require('passport');
-const passportConfig = require('./services/auth');
+import mongoose from 'mongoose';
+import session from 'express-session';
+import passport from 'passport';
+import passportConfig from './services/auth';
 const MongoStore = require('connect-mongo')(session);
-const schema = require('./schema/schema');
-
-const app = express();
-
+import { schema } from './schema/schema';
+const PORT = 4000;
+const server = express();
+server.use('*', cors({ origin: 'http://localhost:3000' }));
 // Create .env and add your mongoLab URI
 
 const MONGO_URI = 'mongodb://' +
@@ -44,7 +44,7 @@ mongoose.connection
 // on the users cookie.  When a user makes a request, this middleware examines
 // the cookie and modifies the request object to indicate which user made the request
 // The cookie itself only contains the id of a session; more data about the session is stored inside of MongoDB.
-app.use(
+server.use(
   session({
     resave: true,
     saveUninitialized: true,
@@ -59,24 +59,25 @@ app.use(
 // Passport is wired into express as a middleware. When a request comes in,
 // Passport will examine the request's session (as set by the above config) and
 // assign the current user to the 'req.user' object.  See also servces/auth.js
-app.use(passport.initialize());
-app.use(passport.session());
+server.use(passport.initialize());
+server.use(passport.session());
 
 // Instruct Express to pass on any request made to the '/api' route
 // to the GraphQL instance.
 
-app.use(
-  '/api',
+server.use(
+  '/graphql',
   bodyParser.json(),
-  expressGraphQL({
+  graphqlExpress({
     schema,
-    graphiql: true,
   })
 );
-const corsMiddleware = cors({
-  origin: 'http://localhost:3000',
-  credentials: true,
-});
-app.use(corsMiddleware);
-app.options(corsMiddleware);
-module.exports = app;
+server.use(
+  '/graphiql',
+  graphiqlExpress({
+    endpointURL: '/graphql',
+  })
+);
+
+server.listen(PORT, () =>
+  console.log(`GraphQL Server is now running on http://localhost:${PORT}`));

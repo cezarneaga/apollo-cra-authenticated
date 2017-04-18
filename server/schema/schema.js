@@ -1,9 +1,17 @@
-const graphql = require('graphql');
-const { GraphQLSchema } = graphql;
+import { makeExecutableSchema } from 'graphql-tools';
+import { resolvers } from './resolvers';
 
-const RootQueryType = require('./types/root_query_type');
-const mutation = require('./mutations');
-module.exports = new GraphQLSchema({
-  query: RootQueryType,
-  mutation,
-});
+const typeDefs = `
+  type UserType {
+    id: ID
+    email: String
+  }
+  type Query {
+    currentUser: UserType
+  }
+  type Mutation {
+    login(email: String, password: String): UserType
+  }
+`;
+const schema = makeExecutableSchema({ typeDefs, resolvers });
+export { schema };

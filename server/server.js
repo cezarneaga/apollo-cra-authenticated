@@ -1,5 +1,5 @@
 const express = require('express');
-require('dotenv').config();
+require('dotenv-extended').load();
 const models = require('./models');
 const expressGraphQL = require('express-graphql');
 const bodyParser = require('body-parser');
@@ -13,15 +13,29 @@ const schema = require('./schema/schema');
 
 const app = express();
 
-// Rename .envtemplate to .env and add your mongoLab URI
-const MONGO_URI = process.env.MONGO_DB;
+// Create .env and add your mongoLab URI
+
+const MONGO_URI = 'mongodb://' +
+  process.env.MONGO_USER +
+  ':' +
+  process.env.MONGO_PASS +
+  '@' +
+  process.env.MONGO_HOST +
+  '/' +
+  process.env.MONGO_DATABASE;
 
 // Mongoose's built in promise library is deprecated, replace it with ES2015 Promise
 mongoose.Promise = global.Promise;
 
 // Connect to the mongoDB instance and log a message
 // on success or failure
-mongoose.connect(MONGO_URI);
+mongoose.connect(
+  'mongodb://' + process.env.MONGO_HOST + '/' + process.env.MONGO_DATABASE,
+  {
+    user: process.env.MONGO_USER,
+    pass: process.env.MONGO_PASS,
+  }
+);
 mongoose.connection
   .once('open', () => console.log('Connected to MongoLab instance.'))
   .on('error', error => console.log('Error connecting to MongoLab:', error));
@@ -29,8 +43,7 @@ mongoose.connection
 // Configures express to use sessions.  This places an encrypted identifier
 // on the users cookie.  When a user makes a request, this middleware examines
 // the cookie and modifies the request object to indicate which user made the request
-// The cookie itself only contains the id of a session; more data about the session
-// is stored inside of MongoDB.
+// The cookie itself only contains the id of a session; more data about the session is stored inside of MongoDB.
 app.use(
   session({
     resave: true,

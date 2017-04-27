@@ -31,6 +31,7 @@ class AuthForm extends React.Component {
           name="password"
           label="Your password"
           value={password}
+          type="password"
           error={this.props.errors.length > 0}
           onChange={e => this.setState({ password: e.target.value })}
         />

@@ -4,7 +4,7 @@
   "description": "Starter pack for an auth-included graphql project",
   "repository": {
     "type": "git",
-    "url": "github.com/stephengrider"
+    "url": "github.com/cezarneaga"
   },
   "main": "index.js",
   "scripts": {

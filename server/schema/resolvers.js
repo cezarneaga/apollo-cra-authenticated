@@ -1,4 +1,4 @@
-import * as AuthService from '../services/auth';
+import { login, signup } from '../services/auth';
 
 export const resolvers = {
   Query: {
@@ -7,8 +7,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    login(root, { email, password }, req) {
-      return AuthService.login({ email, password, req });
+    login(_, { email, password }, req) {
+      return login({ email, password, req });
+    },
+    signup(_, { email, password }, req) {
+      return signup({ email, password, req });
     },
   },
 };

@@ -10,8 +10,10 @@ const typeDefs = `
     currentUser: UserType
   }
   type Mutation {
-    login(email: String, password: String): UserType
+    login(email: String, password: String): UserType,
+    signup(email: String, password: String): UserType
   }
+
 `;
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 export { schema };

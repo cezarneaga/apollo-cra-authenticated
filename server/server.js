@@ -15,7 +15,8 @@ const server = express();
 server.use('*', cors({ origin: 'http://localhost:3000' }));
 // Create .env and add your mongoLab URI
 
-const MONGO_URI = 'mongodb://' +
+const MONGO_URI =
+  'mongodb://' +
   process.env.MONGO_USER +
   ':' +
   process.env.MONGO_PASS +
@@ -68,8 +69,26 @@ server.use(passport.session());
 server.use(
   '/graphql',
   bodyParser.json(),
-  graphqlExpress({
-    schema,
+  graphqlExpress(req => {
+    const query = req.query.query || req.body.query;
+    if (query && query.length > 2000) {
+      // None of our app's queries are this long
+      // Probably indicates someone trying to send an overly expensive query
+      throw new Error('Query too large.');
+    }
+    let user;
+    if (req.user) {
+      user = {
+        id: req.user.email,
+        email: req.user.email,
+      };
+    }
+    return {
+      schema,
+      context: {
+        user,
+      },
+    };
   })
 );
 server.use(
@@ -80,4 +99,5 @@ server.use(
 );
 
 server.listen(PORT, () =>
-  console.log(`GraphQL Server is now running on http://localhost:${PORT}`));
+  console.log(`GraphQL Server is now running on http://localhost:${PORT}`)
+);

@@ -49,7 +49,7 @@ server.use(
   session({
     resave: true,
     saveUninitialized: true,
-    secret: 'aaabbbccc',
+    secret: 'zLP7zefp/Gy2z%wVgm6',
     store: new MongoStore({
       url: MONGO_URI,
       autoReconnect: true,

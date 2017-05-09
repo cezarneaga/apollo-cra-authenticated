@@ -4,6 +4,10 @@ It is a small starter repo for a React frontend, with Apollo Graphql on top of a
 
 Built in authentication with Passport.
 
-## Table of Contents
+## Setup
 
-- coming soon
+- `git clone ...`
+- `yarn`
+- `cd client && yarn`
+- `cd.. && cp .env.schema .env` // add your credentials here
+- `yarn start`

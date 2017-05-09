@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-
+import mongoose from 'mongoose';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
 const User = mongoose.model('user');
 
 // SerializeUser is used to provide some identifying token that can be saved
@@ -27,28 +26,25 @@ passport.deserializeUser((id, done) => {
 // callback, including a string that messages why the authentication process failed.
 // This string is provided back to the GraphQL client.
 passport.use(
-  new LocalStrategy(
-    { usernameField: 'email', passwordField: 'password' },
-    (email, password, done) => {
-      User.findOne({ email: email.toLowerCase() }, (err, user) => {
+  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+    User.findOne({ email: email.toLowerCase() }, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, 'Incorrect username');
+      }
+      user.comparePassword(password, (err, isMatch) => {
         if (err) {
           return done(err);
         }
-        if (!user) {
-          return done(null, false, 'Incorrect username');
+        if (isMatch) {
+          return done(null, user);
         }
-        user.comparePassword(password, (err, isMatch) => {
-          if (err) {
-            return done(err);
-          }
-          if (isMatch) {
-            return done(null, user);
-          }
-          return done(null, false, 'Incorrect password.');
-        });
+        return done(null, false, 'Incorrect password.');
       });
-    }
-  )
+    });
+  })
 );
 
 // Creates a new user account.  We first check to see if a user already exists
@@ -88,7 +84,6 @@ function signup({ email, password, req }) {
 // Express.  We have another compatibility layer here to make it work nicely with
 // GraphQL, as GraphQL always expects to see a promise for handling async code.
 function login({ email, password, req }) {
-  console.log(email, password, req);
   return new Promise((resolve, reject) => {
     passport.authenticate('local', (err, user) => {
       if (err) {
@@ -103,14 +98,8 @@ function login({ email, password, req }) {
         }
         return resolve(user);
       });
-      // if (err) { return next(err); }
-      // if (!user) {
-      //   reject('Invalid credentials.');
-      // }
-      // req.login(user, () => resolve(user));
-      // }
     })({ body: { email, password } });
   });
 }
 
-module.exports = { signup, login };
+export { signup, login };

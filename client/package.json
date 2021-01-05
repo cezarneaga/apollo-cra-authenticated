@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "apollo-client": "^1.0.3",
-    "axios": "^0.15.3",
+    "axios": "^0.21.1",
     "react": "^15.5.4",
     "react-apollo": "^1.0.1",
     "react-dom": "^15.5.4",
